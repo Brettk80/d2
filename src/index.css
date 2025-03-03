@@ -2,47 +2,88 @@
 @tailwind components;
 @tailwind utilities;
 
-/* React DatePicker Custom Styles */
+:root {
+  background-color: white;
+}
+
+body {
+  background-color: white;
+  margin: 0;
+  min-height: 100vh;
+}
+
 .react-datepicker {
-  @apply bg-white border border-gray-200 rounded-lg shadow-lg;
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
 .react-datepicker__header {
-  @apply bg-gray-50 border-b border-gray-200 rounded-t-lg;
+  background-color: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
 }
 
 .react-datepicker__current-month {
-  @apply text-gray-900 font-semibold py-2;
+  color: #111827;
+  font-weight: 600;
+  padding: 0.5rem 0;
 }
 
 .react-datepicker__day-name {
-  @apply text-gray-500 text-sm w-8 h-8 leading-8;
+  color: #6b7280;
+  font-size: 0.875rem;
+  width: 2rem;
+  height: 2rem;
+  line-height: 2rem;
 }
 
 .react-datepicker__day {
-  @apply text-gray-700 text-sm w-8 h-8 leading-8 hover:bg-blue-50 hover:text-blue-600 rounded-full;
+  color: #374151;
+  font-size: 0.875rem;
+  width: 2rem;
+  height: 2rem;
+  line-height: 2rem;
+  border-radius: 9999px;
+}
+
+.react-datepicker__day:hover {
+  background-color: #eff6ff;
+  color: #2563eb;
 }
 
 .react-datepicker__day--selected {
-  @apply bg-blue-600 text-white hover:bg-blue-700;
+  background-color: #2563eb;
+  color: white;
+}
+
+.react-datepicker__day--selected:hover {
+  background-color: #1d4ed8;
 }
 
 .react-datepicker__day--disabled {
-  @apply text-gray-300 hover:bg-transparent cursor-not-allowed;
+  color: #d1d5db;
+  cursor: not-allowed;
+}
+
+.react-datepicker__day--disabled:hover {
+  background-color: transparent;
 }
 
 .react-datepicker__navigation {
-  @apply top-2;
+  top: 0.5rem;
 }
 
 .react-datepicker__navigation--previous {
-  @apply left-2;
+  left: 0.5rem;
 }
 
 .react-datepicker__navigation--next {
-  @apply right-2;
+  right: 0.5rem;
 }
 
 .react-datepicker__triangle {
-  @apply hidden;
+  display: none;
 }
