@@ -1,26 +1,29 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import path from 'path';
 
 export default defineConfig({
   plugins: [react()],
-  optimizeDeps: {
-    esbuildOptions: {
-      target: 'es2020'
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
     },
-    exclude: ['pdfjs-dist']
   },
-  build: {
-    target: 'es2020',
-    sourcemap: true,
-    commonjsOptions: {
-      include: [/node_modules/],
-      transformMixedEsModules: true
-    }
-  },
-  server: {
-    headers: {
-      'Cross-Origin-Opener-Policy': 'same-origin',
-      'Cross-Origin-Embedder-Policy': 'require-corp'
-    }
+  optimizeDeps: {
+    include: [
+      'react-datepicker',
+      'react-day-picker',
+      'uuid',
+      'xlsx',
+      '@react-oauth/google',
+      'framer-motion',
+      'lucide-react',
+      'papaparse',
+      'pdfjs-dist',
+      'react-dropzone',
+      'react-hook-form',
+      'sonner',
+      'zod'
+    ]
   }
 });

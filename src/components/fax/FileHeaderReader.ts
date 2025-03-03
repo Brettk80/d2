@@ -1,5 +1,5 @@
 import Papa from 'papaparse';
-import * as XLSX from 'xlsx';
+import { read, utils } from 'xlsx';
 
 export async function readFileHeaders(file: File): Promise<string[]> {
   const extension = file.name.split('.').pop()?.toLowerCase();
@@ -29,7 +29,7 @@ export async function readFileHeaders(file: File): Promise<string[]> {
   if (extension === 'xlsx' || extension === 'xls') {
     try {
       const data = await file.arrayBuffer();
-      const workbook = XLSX.read(data, { type: 'array' });
+      const workbook = read(data, { type: 'array' });
       
       if (!workbook.SheetNames.length) {
         throw new Error('Excel file contains no sheets');
@@ -40,11 +40,11 @@ export async function readFileHeaders(file: File): Promise<string[]> {
         throw new Error('First sheet is empty');
       }
 
-      const range = XLSX.utils.decode_range(firstSheet['!ref'] || 'A1');
+      const range = utils.decode_range(firstSheet['!ref'] || 'A1');
       const headers: string[] = [];
       
       for (let C = range.s.c; C <= range.e.c; ++C) {
-        const cell = firstSheet[XLSX.utils.encode_cell({ r: 0, c: C })];
+        const cell = firstSheet[utils.encode_cell({ r: 0, c: C })];
         headers.push(cell ? String(cell.v).trim() : '');
       }
 
@@ -88,7 +88,7 @@ export async function getRecordCount(file: File): Promise<number> {
   if (extension === 'xlsx' || extension === 'xls') {
     try {
       const data = await file.arrayBuffer();
-      const workbook = XLSX.read(data, { type: 'array' });
+      const workbook = read(data, { type: 'array' });
       
       if (!workbook.SheetNames.length) {
         throw new Error('Excel file contains no sheets');
@@ -99,7 +99,7 @@ export async function getRecordCount(file: File): Promise<number> {
         throw new Error('First sheet is empty');
       }
 
-      const range = XLSX.utils.decode_range(firstSheet['!ref'] || 'A1');
+      const range = utils.decode_range(firstSheet['!ref'] || 'A1');
       // Subtract 1 to account for header row
       const recordCount = Math.max(0, range.e.r);
       

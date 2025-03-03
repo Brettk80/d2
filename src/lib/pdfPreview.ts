@@ -1,7 +1,17 @@
-import { getDocument, GlobalWorkerOptions, version } from 'pdfjs-dist';
+import * as PDFJS from 'pdfjs-dist';
+import type { PDFDocumentLoadingTask, PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist';
 
-// Configure worker source - using CDN for reliability
-GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${version}/pdf.worker.min.js`;
+// Initialize PDF.js worker
+function initializeWorker() {
+  if (!PDFJS.GlobalWorkerOptions.workerSrc) {
+    import('pdfjs-dist/build/pdf.worker.entry').then(worker => {
+      PDFJS.GlobalWorkerOptions.workerSrc = worker.default;
+    });
+  }
+}
+
+// Call initialization
+initializeWorker();
 
 interface PreviewResult {
   dataUrl: string;
@@ -22,11 +32,11 @@ export async function createPdfPreview(file: File, pageNumber: number = 1): Prom
     }
 
     // Load the PDF document
-    const loadingTask = getDocument({
+    const loadingTask: PDFDocumentLoadingTask = PDFJS.getDocument({
       data: arrayBuffer,
-      cMapUrl: '//cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/cmaps/',
+      cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/cmaps/',
       cMapPacked: true,
-      standardFontDataUrl: '//cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/standard_fonts/'
+      standardFontDataUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/standard_fonts/'
     });
 
     // Handle password-protected PDFs
@@ -35,7 +45,7 @@ export async function createPdfPreview(file: File, pageNumber: number = 1): Prom
     };
 
     // Load PDF document
-    const pdf = await loadingTask.promise;
+    const pdf: PDFDocumentProxy = await loadingTask.promise;
     const totalPages = pdf.numPages;
 
     // Validate page number
@@ -44,7 +54,7 @@ export async function createPdfPreview(file: File, pageNumber: number = 1): Prom
     }
 
     // Get specific page
-    const page = await pdf.getPage(pageNumber);
+    const page: PDFPageProxy = await pdf.getPage(pageNumber);
     
     // Calculate viewport with a scale that provides good quality
     const viewport = page.getViewport({ scale: 1.5 });
@@ -56,7 +66,7 @@ export async function createPdfPreview(file: File, pageNumber: number = 1): Prom
 
     const context = canvas.getContext('2d', { 
       alpha: false,
-      willReadFrequently: true // Optimize for frequent pixel reads
+      willReadFrequently: true
     });
 
     if (!context) {
@@ -73,7 +83,7 @@ export async function createPdfPreview(file: File, pageNumber: number = 1): Prom
         canvasContext: context,
         viewport: viewport,
         background: 'white',
-        enableWebGL: true // Enable WebGL rendering if available
+        enableWebGL: true
       }).promise;
 
       // Convert to JPEG with good quality
